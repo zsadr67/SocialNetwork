@@ -8,7 +8,7 @@ from rest_framework import permissions
 
 from django.shortcuts import get_object_or_404, get_list_or_404
 
-from social.models import Profile, Post
+from social.models import Profile, Post, Like
 from social.serializers import ProfileSerializer, PostSerializer
 
 
@@ -17,6 +17,7 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
+        #print ("obj.user is:" , obj.user , "request.user is: " ,request.user)
         return obj.user == request.user
 
 
@@ -37,7 +38,27 @@ class PostView(viewsets.ModelViewSet):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
 
-    # def perform_create(self, serializer):
-    #     # موقع ساخت پست، نویسنده همون یوزر لاگین شده باشه
-    #     serializer.save(user=self.request.user)
+    def perform_create(self, serializer):
+        # موقع ساخت پست، نویسنده همون یوزر لاگین شده باشه
+        serializer.save(user=self.request.user)
+
+
+class LikeView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id):
+        post = get_object_or_404(Post, pk=post_id)
+
+        like , created = Like.objects.get_or_create(post=post, user=request.user)
+
+        if not created:
+            like.delete()
+            return Response({"status" : "unlike"} ,status=status.HTTP_200_OK)
+        return Response({"status" : "like"} ,status=status.HTTP_201_CREATED)
+
+
+
+
+
 
