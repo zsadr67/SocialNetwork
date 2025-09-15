@@ -36,4 +36,15 @@ class Like(models.Model):
         return f'{self.user.username} likes {self.post}'
 
 
+class Follow(models.Model):
+    follower = models.ForeignKey(User, on_delete=models.CASCADE ,related_name='follower')
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name='following')
+
+    class Meta:
+        unique_together = ('follower', 'following')
+
+    def __str__(self):
+        return f'{self.user.username} follows {self.following}'
+
+
 
