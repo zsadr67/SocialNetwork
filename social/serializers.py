@@ -36,15 +36,6 @@ class PostSerializer(ModelSerializer):
 
 
 
-# class LikeSerializer(ModelSerializer):
-#     user = serializers.PrimaryKeyRelatedField(read_only=True)
-#     post = serializers.PrimaryKeyRelatedField(read_only=True)
-#
-#     class Meta:
-#         model = Like
-#         fields = ['id' ,'user', 'post' , 'created_at']
-#         read_only_fields = ['user']
-
 
 class FollowSerializer(ModelSerializer):
     follower = serializers.CharField(source='follower.username', read_only=True)
@@ -53,13 +44,21 @@ class FollowSerializer(ModelSerializer):
     class Meta:
         model = Follow
         fields = ['id' ,'follower', 'following']
-        read_only_fields = ['follower' , 'following']
+        read_only_fields = ['follower']
+
 
 class FollowingSerializer(ModelSerializer):
     following = serializers.CharField(source='following.username', read_only=True)
 
     class Meta:
         model = Follow
-        fields = ['id' ,'following']
+        fields = ['id' , 'following']
         read_only_fields = ['following']
 
+class FollowerSerializer(ModelSerializer):
+    follower = serializers.CharField(source='follower.username', read_only=True)
+
+    class Meta:
+        model = Follow
+        fields = ['id' , 'follower']
+        read_only_fields = ['follower']

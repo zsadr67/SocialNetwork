@@ -21,7 +21,7 @@ class Post(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.text
+        return self.content[:30]
 
 
 class Like(models.Model):
@@ -44,7 +44,7 @@ class Follow(models.Model):
         unique_together = ('follower', 'following')
 
     def __str__(self):
-        return f'{self.user.username} follows {self.following}'
+        return f'{self.follower.username} follows {self.following}'
 
 
 
